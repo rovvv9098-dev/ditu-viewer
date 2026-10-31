@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b131b">
+<title>在线底图浏览器</title>
+<script>
+  /* 主题在样式加载前定好，避免闪白；?theme=light|dark 可强制 */
+  (function () {
+    var q = '';
+    try { q = new URLSearchParams(location.search).get('theme') || ''; } catch (e) {}
+    try { document.documentElement.setAttribute('data-theme', q || localStorage.getItem('lp_theme') || 'dark'); }
+    catch (e) { document.documentElement.setAttribute('data-theme', q || 'dark'); }
+  })();
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="logo">LP</div>
+    <div>
+      <h1>在线底图浏览器</h1>
+      <div class="sub">ESRI / 天地图 / 高德 / OSM 等 <b id="total">228</b> 个底图图层，点击即可切换预览</div>
+    </div>
+  </div>
+  <div class="search"><input id="q" placeholder="搜索：影像 / 街道 / 地形 / 高德 / 天地图 …"></div>
+  <div class="stat"><b id="pv">—</b> 个可在线预览</div>
+  <button class="theme" id="theme" title="切换明暗主题">☾</button>
+</header>
+
+<main>
+  <aside class="side">
+    <div class="chips" id="chips"></div>
+    <div class="list" id="list"></div>
+  </aside>
+
+  <section class="stage">
+    <div class="mapbox" id="map">
+      <div class="tiles" id="tiles"></div>
+      <div class="tint" id="tint"></div>
+      <div class="hud" id="hud"></div>
+      <div class="notice" id="notice" hidden></div>
+      <div class="zoomer">
+        <button id="zin" title="放大">+</button>
+        <button id="zout" title="缩小">−</button>
+        <button id="zhome" title="回到全图（全球视野）">⌂</button>
+      </div>
+    </div>
+
+    <div class="bar">
+      <button class="btn" id="prev">← 上一个</button>
+      <button class="btn primary" id="next">下一个 →</button>
+      <div class="spacer"></div>
+      <button class="btn ghost" id="copy">复制瓦片地址</button>
+      <a class="btn dl" id="dl" download>下载 .lyr</a>
+    </div>
+
+    <div class="timeline" id="timeline" hidden>
+      <button class="tlbtn" id="tl-prev" title="上一期">‹</button>
+      <input type="range" id="tl-range" min="0" max="0" step="1" value="0">
+      <button class="tlbtn" id="tl-next" title="下一期">›</button>
+      <span class="tlcur"><b id="tl-cur">—</b><i id="tl-span"></i></span>
+    </div>
+
+    <div class="info" id="info"></div>
+  </section>
+
+  <aside class="statside" id="statside" style="display:none">
+    <div class="shd">访问统计 <span class="supd" id="s-upd"></span><button class="sbtn" id="s-refresh" title="立即刷新">↻</button></div>
+    <div class="skpi">
+      <div><b id="s-pv">—</b><span id="s-pv-lab">累计访问 PV</span></div>
+      <div><b id="s-uv">—</b><span id="s-uv-lab">独立访客 UV</span></div>
+    </div>
+    <div class="sblock" data-backend>
+      <div class="stitle">今天</div>
+      <div class="srow"><span>访问量</span><b id="s-pvt">—</b></div>
+      <div class="srow"><span>访客数</span><b id="s-uvt">—</b></div>
+    </div>
+    <div class="sblock" data-backend>
+      <div class="stitle">近 7 天 PV</div>
+      <div class="sbars" id="s-bars"></div>
+    </div>
+    <div class="sblock" data-backend>
+      <div class="stitle">当前底图</div>
+      <div class="srow"><span>浏览量</span><b id="s-view">—</b></div>
+      <div class="srow"><span>下载量</span><b id="s-dl">—</b></div>
+    </div>
+    <div class="sblock" data-backend>
+      <div class="stitle">浏览最多</div>
+      <div id="s-top" class="stop"></div>
+    </div>
+    <div class="sblock" id="s-bu-note" hidden>
+      <div class="stitle">说明</div>
+      <div class="snote">数据来自不蒜子，只统计"页面打开次数"。<br>分图层的浏览量和下载量需要后端，静态托管下不统计。</div>
+    </div>
+    <a class="slink" href="stats.html" target="_blank" data-backend>完整统计看板 →</a>
+  </aside>
+</main>
+
+<!-- 不蒜子计数器：只统计站点 PV/UV，数值会填进下面两个 span -->
+<div id="busuanzi-holder" hidden>
+  <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv"></span></span>
+  <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv"></span></span>
+</div>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="data.js"></script>
+<script>
+  // 统计配置：用 server_stats.py 托管时保持 '/api/event'；
+  // 静态托管（GitHub Pages / OSS）时填 baiduId，或把 endpoint 指向你的统计服务。
+  window.STATS_CONFIG = { endpoint: '/api/event', baiduId: '', refreshMin: 10 };  // refreshMin：右侧统计自动刷新间隔（分钟）
+</script>
+<script src="stats.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
+
+

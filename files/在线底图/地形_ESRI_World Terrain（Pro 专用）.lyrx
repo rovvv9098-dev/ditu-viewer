@@ -1,0 +1,92 @@
+{
+  "type" : "CIMLayerDocument",
+  "version" : "3.0.0",
+  "build" : 36056,
+  "layers" : [
+    "CIMPATH=__/_______3.json"
+  ],
+  "layerDefinitions" : [
+    {
+      "type" : "CIMTiledServiceLayer",
+      "name" : "切片的服务图层",
+      "uRI" : "CIMPATH=__/_______3.json",
+      "sourceModifiedTime" : {
+        "type" : "TimeInstant"
+      },
+      "useSourceMetadata" : true,
+      "layerElevation" : {
+        "type" : "CIMLayerElevationSurface",
+        "elevationSurfaceLayerURI" : "CIMPATH=__/51d867663bc248efb72064cac650c4d5.json"
+      },
+      "layerType" : "Operational",
+      "showLegends" : true,
+      "visibility" : true,
+      "displayCacheType" : "Permanent",
+      "maxDisplayCacheAge" : 5,
+      "showPopups" : true,
+      "serviceLayerID" : -1,
+      "refreshRate" : -1,
+      "refreshRateUnit" : "esriTimeUnitsSeconds",
+      "blendingMode" : "Alpha",
+      "allowDrapingOnIntegratedMesh" : true,
+      "serviceConnection" : {
+        "type" : "CIMStandardServiceConnection",
+        "serviceType" : "1",
+        "url" : "https://server.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}"
+      },
+      "transparentColor" : {
+        "type" : "CIMRGBColor",
+        "values" : [
+          0,
+          0,
+          0,
+          100
+        ]
+      },
+      "backgroundColor" : {
+        "type" : "CIMRGBColor",
+        "values" : [
+          0,
+          0,
+          0,
+          100
+        ]
+      }
+    }
+  ],
+  "rGBColorProfile" : "sRGB IEC61966-2.1",
+  "cMYKColorProfile" : "U.S. Web Coated (SWOP) v2",
+  "elevationSurfaceLayerDefinitions" : [
+    {
+      "type" : "CIMElevationSurfaceLayer",
+      "name" : "地面",
+      "uRI" : "CIMPATH=__/51d867663bc248efb72064cac650c4d5.json",
+      "useSourceMetadata" : true,
+      "description" : "地面",
+      "expanded" : true,
+      "layerType" : "Operational",
+      "showLegends" : false,
+      "visibility" : true,
+      "displayCacheType" : "Permanent",
+      "maxDisplayCacheAge" : 5,
+      "showPopups" : true,
+      "serviceLayerID" : -1,
+      "refreshRate" : -1,
+      "refreshRateUnit" : "esriTimeUnitsSeconds",
+      "blendingMode" : "Alpha",
+      "allowDrapingOnIntegratedMesh" : true,
+      "elevationMode" : "BaseGlobeSurface",
+      "verticalExaggeration" : 1,
+      "color" : {
+        "type" : "CIMRGBColor",
+        "values" : [
+          255,
+          255,
+          255,
+          100
+        ]
+      },
+      "surfaceTINShadingMode" : "Smooth"
+    }
+  ]
+}
