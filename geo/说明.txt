@@ -1,0 +1,10 @@
+﻿本目录是矢量边界，GeoJSON 格式（经纬度，CGCS2000/WGS84），已做过简化。
+
+  province.js   省级面（34 个）
+  city.js       市级面（375 个）
+  county.js     县级面（2891 个）
+  border.js     国界 / 境界线（线要素）
+
+文件内容形如：window.GEO = window.GEO || {}; window.GEO.province = { ...FeatureCollection... }
+用 <script> 加载即可，不需要起服务器（file:// 也能读）。
+原始 shp/dbf 在「底图工作包.zip」的 底图分享包_2026-10-31\2025年带审图号行政区划\。

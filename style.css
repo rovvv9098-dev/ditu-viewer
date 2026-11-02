@@ -377,3 +377,80 @@ html[data-theme="dark"] .item .vd.dup{border-color:#4a3a1c;color:var(--warn)}
 }
 .theme:hover{color:var(--accent);border-color:var(--accent);transform:rotate(12deg)}
 html[data-theme="dark"] .grouphd-warn{border-bottom-color:#4a3a1c}
+
+/* ================= 气象专题（合并自完整版，变量已换成本站配色） ================= */
+[hidden]{display:none !important}
+
+.modes{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px;flex:none}
+.mode{
+  border:0;background:transparent;padding:5px 14px;font-size:12px;color:var(--ink2);font-family:inherit;
+  border-radius:6px;cursor:pointer;transition:.15s;white-space:nowrap
+}
+.mode:hover{background:var(--accent-soft);color:var(--ink)}
+.mode.on{background:var(--surface);color:var(--accent-ink);font-weight:600;box-shadow:var(--shadow-sm)}
+
+#vec{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;display:none}
+html[data-theme="dark"]{--theme-map-bg:#0e1821}
+html:not([data-theme="dark"]){--theme-map-bg:#eef2f6}
+.mapbox .hud,.mapbox .zoomer,.mapbox .notice{z-index:5}
+
+.themeside{
+  width:250px;flex:none;background:var(--surface);border-right:1px solid var(--line);
+  padding:16px 14px;display:flex;flex-direction:column;gap:18px;overflow:auto
+}
+.ts-hd{font-size:13px;font-weight:650;color:var(--ink);padding-bottom:2px}
+.ts-grp .seg{display:inline-flex;width:100%}
+.ts-lb{font-size:10.5px;color:var(--muted);margin-bottom:7px;letter-spacing:.5px}
+.ts-note{
+  font-size:10.5px;color:var(--muted);line-height:1.85;background:var(--surface-2);
+  border:1px solid var(--line-soft);border-radius:8px;padding:9px 10px
+}
+.tchk{display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--ink2)}
+.tchk label{display:flex;align-items:center;gap:7px;cursor:pointer}
+.tchk input{accent-color:var(--accent);width:14px;height:14px}
+
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface-2);padding:2px;gap:2px}
+.seg button{
+  border:0;background:transparent;padding:5px 10px;font-size:11.5px;color:var(--ink2);cursor:pointer;
+  border-radius:6px;transition:.15s;flex:1;white-space:nowrap;font-family:inherit
+}
+.seg button:hover{background:var(--accent-soft)}
+.seg button.on{background:var(--surface);color:var(--accent-ink);font-weight:600;box-shadow:var(--shadow-sm)}
+
+.themebar{
+  display:flex;flex-direction:column;gap:7px;flex:none;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:9px 13px;box-shadow:var(--shadow-sm)
+}
+.trow{display:flex;align-items:center;gap:12px}
+.trow input[type=range]{flex:1;accent-color:var(--accent);height:4px}
+.tlegend{display:flex;flex-direction:column;gap:4px;font-size:9.5px;color:var(--ink2)}
+.tlegend .lrow{display:flex;align-items:center;gap:5px}
+.tlegend .lk{width:26px;flex:none;font-size:9.5px;color:var(--muted)}
+.tlegend .lu{font-size:9px;color:var(--muted);margin-left:2px}
+.tlegend .lg{display:flex;align-items:center;gap:3px;white-space:nowrap;width:74px}
+.tlegend .lg i{display:block;width:22px;height:11px;border-radius:3px;border:1px solid rgba(16,24,40,.08)}
+.tlegend .lg span{font-size:9px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.btn.sm{padding:4px 9px;font-size:11px;border-radius:7px;box-shadow:none}
+.ybtn{padding:4px 8px;font-size:11px;min-width:30px;justify-content:center}
+.ynum{
+  width:72px;border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12px;
+  text-align:center;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--surface);outline:none;font-family:inherit
+}
+.ynum:focus{border-color:#9fd0dd;box-shadow:0 0 0 3px rgba(28,146,180,.12)}
+.yunit{font-size:11px;color:var(--muted);margin-left:-4px}
+
+.ucard{
+  position:absolute;z-index:6;width:268px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:12px 13px 9px;font-size:12px;backdrop-filter:blur(6px)
+}
+.uc-hd{display:flex;align-items:baseline;gap:6px;margin-bottom:7px}
+.uc-hd b{font-size:13.5px;color:var(--ink)}
+.uc-hd .lv{font-size:10px;color:var(--muted)}
+.uc-x{margin-left:auto;cursor:pointer;color:var(--muted);font-style:normal;font-size:15px;line-height:1}
+.uc-x:hover{color:var(--ink)}
+.uc-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+.uc-k{width:60px;color:var(--muted);font-size:11px}
+.uc-v{font-weight:650;font-variant-numeric:tabular-nums;font-size:13px}
+.uc-tag{font-size:9.5px;padding:2px 7px;border-radius:20px;color:#fff;font-weight:500}
+.uc-sub{font-size:9.5px;color:var(--muted);margin:7px 0 3px}

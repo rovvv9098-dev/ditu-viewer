@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b131b">
-<title>在线底图浏览器</title>
+<title>底图与气象数据浏览器</title>
 <script>
   /* 主题在样式加载前定好，避免闪白；?theme=light|dark 可强制 */
   (function () {
@@ -22,16 +22,47 @@
   <div class="brand">
     <div class="logo">LP</div>
     <div>
-      <h1>在线底图浏览器</h1>
-      <div class="sub">ESRI / 天地图 / 高德 / OSM 等 <b id="total">228</b> 个底图图层，点击即可切换预览</div>
+      <h1>底图与气象数据浏览器</h1>
+      <div class="sub">ESRI / 天地图 / 高德 / OSM 等 <b id="total">228</b> 个底图图层 · 气温降水专题</div>
     </div>
+  </div>
+  <div class="modes" id="modes">
+    <button class="mode on" data-m="map">底图</button>
+    <button class="mode" data-m="theme">气象专题</button>
   </div>
   <div class="search"><input id="q" placeholder="搜索：影像 / 街道 / 地形 / 高德 / 天地图 …"></div>
   <div class="stat"><b id="pv">—</b> 个可在线预览</div>
-  <button class="theme" id="theme" title="切换明暗主题">☾</button>
+  <button class="theme" id="theme" title="切换明暗主题"></button>
 </header>
 
 <main>
+  <aside class="themeside" id="themeside" hidden>
+    <div class="ts-hd">气象专题</div>
+    <div class="ts-grp"><div class="ts-lb">指标</div>
+      <div class="seg" id="tmetric">
+        <button class="on" data-v="temp">气温</button><button data-v="prec">降水</button>
+      </div>
+    </div>
+    <div class="ts-grp"><div class="ts-lb">统计单元</div>
+      <div class="seg" id="tlevel">
+        <button class="on" data-v="province">省</button><button data-v="city">市</button><button data-v="county">县</button>
+      </div>
+    </div>
+    <div class="ts-grp"><div class="ts-lb">边界叠加</div>
+      <div class="tchk" id="tlayers">
+        <label><input type="checkbox" data-k="province" checked>省界</label>
+        <label><input type="checkbox" data-k="city">市界</label>
+        <label><input type="checkbox" data-k="county">县界</label>
+        <label><input type="checkbox" data-k="border" checked>国界</label>
+      </div>
+    </div>
+    <div class="ts-grp"><div class="ts-lb">数据说明</div>
+      <div class="ts-note">1901–2025 年逐年均值，1 km 分辨率栅格统计到行政单元。<br>
+      1901–1950 为重建/插值结果，非实测。<br>
+      边界：2025 年带审图号行政区划。</div>
+    </div>
+  </aside>
+
   <aside class="side">
     <div class="chips" id="chips"></div>
     <div class="list" id="list"></div>
@@ -40,17 +71,31 @@
   <section class="stage">
     <div class="mapbox" id="map">
       <div class="tiles" id="tiles"></div>
+      <canvas id="vec"></canvas>
       <div class="tint" id="tint"></div>
       <div class="hud" id="hud"></div>
       <div class="notice" id="notice" hidden></div>
+      <div class="ucard" id="ucard" hidden></div>
       <div class="zoomer">
         <button id="zin" title="放大">+</button>
         <button id="zout" title="缩小">−</button>
-        <button id="zhome" title="回到全图（全球视野）">⌂</button>
+        <button id="zhome" title="回到全图">⌂</button>
       </div>
     </div>
 
-    <div class="bar">
+    <div class="themebar" id="themebar" hidden>
+      <div class="trow">
+        <button class="btn ghost sm" id="tplay">▶ 播放</button>
+        <button class="btn ghost sm ybtn" id="tyearPrev" title="上一年（←）">◀</button>
+        <input type="range" id="tyear" min="1901" max="2025" value="2025" step="1">
+        <button class="btn ghost sm ybtn" id="tyearNext" title="下一年（→）">▶</button>
+        <input type="number" id="tyearNum" class="ynum" min="1901" max="2025" value="2025" step="1">
+        <span class="yunit">年</span>
+      </div>
+      <div class="tlegend" id="tlegend"></div>
+    </div>
+
+    <div class="bar" id="mapbar">
       <button class="btn" id="prev">← 上一个</button>
       <button class="btn primary" id="next">下一个 →</button>
       <div class="spacer"></div>
@@ -111,11 +156,10 @@
 <script>
   // 统计配置：用 server_stats.py 托管时保持 '/api/event'；
   // 静态托管（GitHub Pages / OSS）时填 baiduId，或把 endpoint 指向你的统计服务。
-  window.STATS_CONFIG = { endpoint: '/api/event', baiduId: '', refreshMin: 10 };  // refreshMin：右侧统计自动刷新间隔（分钟）
+  window.STATS_CONFIG = { endpoint: '/api/event', baiduId: '', refreshMin: 10 };
 </script>
 <script src="stats.js"></script>
+<script src="theme.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
-
-
