@@ -42,6 +42,27 @@
     drag: null,
   };
 
+  /* 视图参数：?z=7&lon=109&lat=36（只读，不回写地址栏） */
+  (function () {
+    const q = new URLSearchParams(INIT_SEARCH);
+    const z = +q.get('z'), lon = +q.get('lon'), lat = +q.get('lat');
+    if (z >= 1 && z <= 17) state.view.z = z;
+    if (isFinite(lon) && Math.abs(lon) <= 180) state.view.lon = lon;
+    if (isFinite(lat) && Math.abs(lat) <= 85) state.view.lat = lat;
+  })();
+
+  /* ---------- 给气象专题（theme.js）用的接口 ---------- */
+  const baseName = n => String(n).replace(/（.*?）/g, '').trim();
+  window.MAPVIEW = state.view;
+  window.MAP_SELECT = function (name) {
+    const b = baseName(name);
+    let i = state.items.findIndex(x => x.name === name);
+    if (i < 0) i = state.items.findIndex(x => baseName(x.name) === b);
+    if (i < 0) i = state.items.findIndex(x => baseName(x.name).indexOf(b) === 0);
+    if (i >= 0) select(i);
+  };
+  window.MAP_REDRAW = function () { render(); };
+
   /* ---------- 瓦片地址 ---------- */
   function tileUrl(tpl, z, x, y) {
     return tpl
@@ -68,6 +89,12 @@
 
   /* ---------- 绘制 ---------- */
   function render() {
+    /* 气象专题模式下，地图由 theme.js 画在 canvas 上 */
+    if (window.THEME && window.THEME.isOn()) {
+      window.THEME.draw(state.view);
+      $('#hud').textContent = `z${state.view.z} · ${state.view.lon.toFixed(2)}°E, ${state.view.lat.toFixed(2)}°N`;
+      return;
+    }
     const lay = state.items[state.idx];
     if (!lay || !lay.tpl) return;
     const w = map.clientWidth, h = map.clientHeight;
@@ -230,6 +257,28 @@
 
   /* ---------- 交互 ---------- */
   function bind() {
+    /* 底图 / 气象专题 切换 */
+    const modes = $('#modes');
+    if (modes) modes.addEventListener('click', e => {
+      const b = e.target.closest('.mode'); if (!b) return;
+      modes.querySelectorAll('.mode').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      const on = b.dataset.m === 'theme';
+      const side = document.querySelector('.side');
+      if (on) {
+        if (side) side.style.display = 'none';
+        const tl = $('#timeline'); if (tl) tl.hidden = true;
+        window.THEME.show();
+      } else {
+        if (side) side.style.display = '';
+        window.THEME.hide();
+        /* 专题里用的是小数层级（4.3 / 4.6），回到瓦片模式要取整 */
+        state.view.z = Math.max(1, Math.min(17, Math.round(state.view.z)));
+        select(state.idx);
+        syncTimeline(state.items[state.idx]);
+      }
+    });
+
     $('#chips').addEventListener('click', e => {
       const b = e.target.closest('.chip'); if (!b) return;
       state.chip = b.dataset.c;
@@ -295,9 +344,10 @@
     };
     $('#zin').onclick = () => { state.view.z = Math.min(17, state.view.z + 1); render(); };
     $('#zout').onclick = () => { state.view.z = Math.max(1, state.view.z - 1); render(); };
-    $('#zhome').onclick = () => { state.view = { lon: 0, lat: 0, z: 2 }; render(); };
+    $('#zhome').onclick = () => { state.view.lon = 0; state.view.lat = 0; state.view.z = 2; render(); };
 
     document.addEventListener('keydown', e => {
+      if (window.THEME && window.THEME.isOn()) return;   // 专题模式下方向键留给年份
       if (e.target.tagName === 'INPUT') return;
       if (e.key === 'ArrowRight') { e.preventDefault(); select(state.idx + 1, { scroll: true, count: true }); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); select(state.idx - 1, { scroll: true, count: true }); }
@@ -454,6 +504,12 @@
   const def = state.items.findIndex(x => x.name === '影像_ESRI_World Imagery');
   const first = def >= 0 ? def : state.items.findIndex(x => x.tpl);
   select(deepIdx >= 0 ? deepIdx : (first >= 0 ? first : 0), { scroll: true, count: true });
+
+  /* ?mode=theme 直接进气象专题（方便分享/截图） */
+  if (new URLSearchParams(INIT_SEARCH).get('mode') === 'theme') {
+    const tb = document.querySelector('.mode[data-m="theme"]');
+    if (tb) setTimeout(() => tb.click(), 60);
+  }
 
   const kick = () => requestAnimationFrame(() => requestAnimationFrame(render));
   kick();
