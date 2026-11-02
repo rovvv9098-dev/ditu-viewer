@@ -322,6 +322,12 @@
         document.documentElement.setAttribute('data-theme', next);
         paint();
         try { localStorage.setItem('lp_theme', next); } catch (e) {}
+        /* 专题模式下重画，让边界线/背景跟着换色 */
+        if (window.THEME && window.THEME.isOn()) {
+          const tbg = (getComputedStyle(document.documentElement).getPropertyValue('--theme-map-bg') || '').trim();
+          const box = $('#map'); if (box && tbg) box.style.background = tbg;
+          window.THEME.draw(state.view);
+        }
       };
     }
 
