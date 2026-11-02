@@ -511,10 +511,22 @@
   const first = def >= 0 ? def : state.items.findIndex(x => x.tpl);
   select(deepIdx >= 0 ? deepIdx : (first >= 0 ? first : 0), { scroll: true, count: true });
 
-  /* ?mode=theme 直接进气象专题（方便分享/截图） */
+  /* ?mode=theme 直接进气象专题（方便分享/截图）；可再带 &lon= &lat= &z= 定位 */
   if (new URLSearchParams(INIT_SEARCH).get('mode') === 'theme') {
     const tb = document.querySelector('.mode[data-m="theme"]');
-    if (tb) setTimeout(() => tb.click(), 60);
+    if (tb) setTimeout(() => {
+      tb.click();
+      const q = new URLSearchParams(INIT_SEARCH);
+      const z = +q.get('z'), lon = +q.get('lon'), lat = +q.get('lat');
+      if (z || lon || lat) {
+        setTimeout(() => {
+          if (lon) state.view.lon = lon;
+          if (lat) state.view.lat = lat;
+          if (z) state.view.z = z;
+          render();
+        }, 1500);
+      }
+    }, 60);
   }
 
   const kick = () => requestAnimationFrame(() => requestAnimationFrame(render));
