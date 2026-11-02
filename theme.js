@@ -60,8 +60,10 @@ window.THEME = (function () {
       await Promise.all([
         loadScript(`geo/${S.level}.js`),
         loadScript(`data/${S.metric}_${S.level}.js`),
+        loadScript('geo/border.js'),
       ]);
       S.geo[S.level] = (window.GEO || {})[S.level];
+      S.geo.border = (window.GEO || {}).border;
       S.panel = (window.PANEL || {})[`${S.metric}_${S.level}`];
       if (!S.geo[S.level] || !S.panel) throw new Error('数据不完整');
       buildIndex();
@@ -199,9 +201,34 @@ window.THEME = (function () {
         }
       }
     };
-    strokeOf('county', 'rgba(255,255,255,.55)');
-    strokeOf('city', 'rgba(60,60,60,.45)');
-    strokeOf('province', 'rgba(40,40,40,.85)');
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const C = dark
+      ? { county: 'rgba(255,255,255,.18)', city: 'rgba(220,232,245,.32)', province: 'rgba(235,245,255,.55)', border: 'rgba(240,248,255,.9)' }
+      : { county: 'rgba(255,255,255,.55)', city: 'rgba(60,60,60,.45)', province: 'rgba(40,40,40,.85)', border: 'rgba(30,30,30,.92)' };
+    strokeOf('county', C.county);
+    strokeOf('city', C.city);
+    strokeOf('province', C.province);
+
+    /* 国界 / 九段线：border.js 里是 MultiLineString，不能按面处理 */
+    if (S.layers.border && S.geo.border) {
+      ctx.strokeStyle = C.border;
+      ctx.lineWidth = 1.4;
+      ctx.lineCap = 'round';
+      for (const f of S.geo.border.features) {
+        const g = f.geometry; if (!g) continue;
+        const lines = g.type === 'MultiLineString' ? g.coordinates
+                    : g.type === 'LineString' ? [g.coordinates] : [];
+        for (const line of lines) {
+          if (!line || line.length < 2) continue;
+          ctx.beginPath();
+          for (let k = 0; k < line.length; k++) {
+            const x = lon2x(line[k][0], z), y = lat2y(line[k][1], z);
+            if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+      }
+    }
     ctx.restore();
 
     // 命中测试用的离屏上下文
